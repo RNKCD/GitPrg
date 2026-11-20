@@ -30,4 +30,22 @@ public class DatabaseService {
 		}
 		return departments;
 	}
+
+	/**
+	 * Returns all projects sorted by name.
+	 */
+	public static List<Project> loadProjects(String dbName) throws DatabaseException {
+		String sql = "SELECT Pnumber, Pname FROM PROJECT ORDER BY Pname";
+		List<Project> projects = new ArrayList<>();
+		try (Connection conn = DatabaseConnection.getConnection(dbName);
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+			while (rs.next()) {
+				projects.add(new Project(rs.getInt("Pnumber"), rs.getString("Pname")));
+			}
+		} catch (SQLException e) {
+			throw new DatabaseException("Could not load projects from " + dbName, e);
+		}
+		return projects;
+	}
 }
