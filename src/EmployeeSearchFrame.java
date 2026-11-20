@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+
 public class EmployeeSearchFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -31,7 +32,10 @@ public class EmployeeSearchFrame extends JFrame {
 	private JList<String> lstProject;
 	private DefaultListModel<String> project = new DefaultListModel<String>();
 	private JTextArea textAreaEmployee;
-	/**
+   
+	private JCheckBox chckbxNotDept;
+   private JCheckBox chckbxNotProject;
+   /**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
@@ -77,16 +81,19 @@ public class EmployeeSearchFrame extends JFrame {
 		 */
 		btnDBFill.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] dept = {"Headquarters", "Reorganization"};	
-				for(int i = 0; i < dept.length; i++) {
-					department.addElement(dept[i]);
-				}
-				String[] prj = {"ProdoctX", "ProductY", "ProductZ"};
-				for(int j = 0; j < prj.length; j++) {
-					project.addElement(prj[j]);
-				}
-				
-			}
+            
+           // Clear employee results
+           textAreaEmployee.setText("");
+   
+           // Clear selected departments and projects
+           lstDepartment.clearSelection();
+           lstProject.clearSelection();
+   
+           // Reset NOT checkboxes
+           chckbxNotDept.setSelected(false);
+           chckbxNotProject.setSelected(false);
+   				
+   			}
 		});
 		
 		btnDBFill.setFont(new Font("Times New Roman", Font.BOLD, 12));
@@ -107,20 +114,29 @@ public class EmployeeSearchFrame extends JFrame {
 		lstProject.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lstProject.setModel(project);
 		lstProject.setBounds(225, 84, 150, 42);
-		contentPane.add(lstProject);
 		
-		JCheckBox chckbxNotDept = new JCheckBox("Not");
+      //adding scroll in the project section
+      JScrollPane projectScroll = new JScrollPane(lstProject);
+      projectScroll.setBounds(225, 84, 150, 42);
+      contentPane.add(projectScroll);
+		
+		chckbxNotDept = new JCheckBox("Not");
 		chckbxNotDept.setBounds(71, 133, 59, 23);
 		contentPane.add(chckbxNotDept);
 		
-		JCheckBox chckbxNotProject = new JCheckBox("Not");
+		chckbxNotProject = new JCheckBox("Not");
 		chckbxNotProject.setBounds(270, 133, 59, 23);
 		contentPane.add(chckbxNotProject);
 		
 		lstDepartment = new JList<String>(new DefaultListModel<String>());
 		lstDepartment.setBounds(36, 84, 172, 40);
-		contentPane.add(lstDepartment);
-		lstDepartment.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+      //adding scroll on the department section
+      JScrollPane departmentScroll = new JScrollPane(lstDepartment);
+      departmentScroll.setBounds(36, 84, 172, 40);
+      contentPane.add(departmentScroll);
+		
+      lstDepartment.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lstDepartment.setModel(department);
 		
 		JLabel lblEmployee = new JLabel("Employee");
@@ -149,5 +165,10 @@ public class EmployeeSearchFrame extends JFrame {
 		textAreaEmployee = new JTextArea();
 		textAreaEmployee.setBounds(36, 197, 339, 68);
 		contentPane.add(textAreaEmployee);
+      
+      // Add scrolling to employee results
+      JScrollPane employeeScroll = new JScrollPane(textAreaEmployee);
+      employeeScroll.setBounds(36, 197, 339, 68);
+      contentPane.add(employeeScroll);
 	}
 }
