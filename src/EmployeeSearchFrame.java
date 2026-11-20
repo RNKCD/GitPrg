@@ -77,6 +77,11 @@ public class EmployeeSearchFrame extends JFrame {
 		 */
 		btnDBFill.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+            
+            //reset the list before adding items
+            department.clear();
+            project.clear();
+
 				String[] dept = {"Headquarters", "Reorganization"};	
 				for(int i = 0; i < dept.length; i++) {
 					department.addElement(dept[i]);
@@ -107,7 +112,11 @@ public class EmployeeSearchFrame extends JFrame {
 		lstProject.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lstProject.setModel(project);
 		lstProject.setBounds(225, 84, 150, 42);
-		contentPane.add(lstProject);
+		
+      //adding scroll in the project section
+      JScrollPane projectScroll = new JScrollPane(lstProject);
+      projectScroll.setBounds(225, 84, 150, 42);
+      contentPane.add(projectScroll);
 		
 		JCheckBox chckbxNotDept = new JCheckBox("Not");
 		chckbxNotDept.setBounds(71, 133, 59, 23);
@@ -119,8 +128,13 @@ public class EmployeeSearchFrame extends JFrame {
 		
 		lstDepartment = new JList<String>(new DefaultListModel<String>());
 		lstDepartment.setBounds(36, 84, 172, 40);
-		contentPane.add(lstDepartment);
-		lstDepartment.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+      //adding scroll on the department section
+      JScrollPane departmentScroll = new JScrollPane(lstDepartment);
+      departmentScroll.setBounds(36, 84, 172, 40);
+      contentPane.add(departmentScroll);
+		
+      lstDepartment.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lstDepartment.setModel(department);
 		
 		JLabel lblEmployee = new JLabel("Employee");
@@ -149,5 +163,10 @@ public class EmployeeSearchFrame extends JFrame {
 		textAreaEmployee = new JTextArea();
 		textAreaEmployee.setBounds(36, 197, 339, 68);
 		contentPane.add(textAreaEmployee);
+      
+      // Add scrolling to employee results
+      JScrollPane employeeScroll = new JScrollPane(textAreaEmployee);
+      employeeScroll.setBounds(36, 197, 339, 68);
+      contentPane.add(employeeScroll);
 	}
 }
