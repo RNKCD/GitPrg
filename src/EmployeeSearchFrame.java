@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeSearchFrame extends JFrame {
@@ -31,10 +32,10 @@ public class EmployeeSearchFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtDatabase;
-	private JList<String> lstDepartment;
-	private DefaultListModel<String> department = new DefaultListModel<String>();
-	private JList<String> lstProject;
-	private DefaultListModel<String> project = new DefaultListModel<String>();
+	private JList<Department> lstDepartment;
+	private DefaultListModel<Department> department = new DefaultListModel<Department>();
+	private JList<Project> lstProject;
+	private DefaultListModel<Project> project = new DefaultListModel<Project>();
 	private JTextArea textAreaEmployee;
    
 	private JCheckBox chckbxNotDept;
@@ -102,12 +103,12 @@ public class EmployeeSearchFrame extends JFrame {
 
             // Display departments
             for (Department d : departments) {
-                department.addElement(d.getName());
+                department.addElement(d);
             }
 
             // Display projects
             for (Project p : projects) {
-                project.addElement(p.getName());
+                project.addElement(p);
             }
 
             // Reset GUI selections
@@ -149,7 +150,7 @@ public class EmployeeSearchFrame extends JFrame {
 		lblProject.setBounds(255, 63, 47, 14);
 		contentPane.add(lblProject);
 		
-		lstProject = new JList<String>(new DefaultListModel<String>());
+		lstProject = new JList<Project>(new DefaultListModel<Project>());
 		lstProject.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lstProject.setModel(project);
 		lstProject.setBounds(225, 84, 150, 42);
@@ -170,7 +171,7 @@ public class EmployeeSearchFrame extends JFrame {
 		chckbxNotProject.setBounds(270, 133, 59, 23);
 		contentPane.add(chckbxNotProject);
 		
-		lstDepartment = new JList<String>(new DefaultListModel<String>());
+		lstDepartment = new JList<Department>(new DefaultListModel<Department>());
 		lstDepartment.setBounds(36, 84, 172, 40);
 		
       //adding scroll on the department section
@@ -192,12 +193,34 @@ public class EmployeeSearchFrame extends JFrame {
 		JButton btnSearch = new JButton("Search");
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-               EmployeeSearchFrame.this,
-               "Employee search function is not ready.",
-               "Search",
-               JOptionPane.INFORMATION_MESSAGE
-        );
+				// Collect the selected department and project numbers
+					List<Integer> departmentNumbers = new ArrayList<Integer>();
+					for (Department d : lstDepartment.getSelectedValuesList()) {
+						departmentNumbers.add(d.getNumber());
+					}
+					List<Integer> projectNumbers = new ArrayList<Integer>();
+					for (Project p : lstProject.getSelectedValuesList()) {
+						projectNumbers.add(p.getNumber());
+					}
+
+					try {
+						List<String> employees = new EmployeeSearchService().searchEmployees(
+								txtDatabase.getText().trim(), departmentNumbers, projectNumbers,
+								chckbxNotDept.isSelected(), chckbxNotProject.isSelected());
+						if (employees.isEmpty()) {
+							textAreaEmployee.setText("No employees found.");
+						} else {
+							textAreaEmployee.setText(String.join("\n", employees));
+						}
+						textAreaEmployee.setCaretPosition(0);
+					} catch (DatabaseException ex) {
+						textAreaEmployee.setText("");
+						JOptionPane.showMessageDialog(
+								EmployeeSearchFrame.this,
+								ex.getMessage(),
+								"Database Error",
+								JOptionPane.ERROR_MESSAGE);
+					}
 			}
 		});
 		btnSearch.setBounds(80, 276, 89, 23);
