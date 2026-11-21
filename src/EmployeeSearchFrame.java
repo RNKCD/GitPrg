@@ -217,6 +217,7 @@ public class EmployeeSearchFrame extends JFrame {
 		contentPane.add(btnClear);
 		
 		textAreaEmployee = new JTextArea();
+      textAreaEmployee.setEditable(false);
 		textAreaEmployee.setBounds(36, 197, 339, 68);
 		
       
