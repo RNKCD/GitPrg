@@ -21,6 +21,14 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
+import java.util.List;
+
 public class EmployeeSearchFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -31,7 +39,10 @@ public class EmployeeSearchFrame extends JFrame {
 	private JList<String> lstProject;
 	private DefaultListModel<String> project = new DefaultListModel<String>();
 	private JTextArea textAreaEmployee;
-	/**
+   
+	private JCheckBox chckbxNotDept;
+   private JCheckBox chckbxNotProject;
+   /**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
@@ -118,11 +129,16 @@ public class EmployeeSearchFrame extends JFrame {
       projectScroll.setBounds(225, 84, 150, 42);
       contentPane.add(projectScroll);
 		
-		JCheckBox chckbxNotDept = new JCheckBox("Not");
+      //adding scroll in the project section
+      JScrollPane projectScroll = new JScrollPane(lstProject);
+      projectScroll.setBounds(225, 84, 150, 42);
+      contentPane.add(projectScroll);
+		
+		chckbxNotDept = new JCheckBox("Not");
 		chckbxNotDept.setBounds(71, 133, 59, 23);
 		contentPane.add(chckbxNotDept);
 		
-		JCheckBox chckbxNotProject = new JCheckBox("Not");
+		chckbxNotProject = new JCheckBox("Not");
 		chckbxNotProject.setBounds(270, 133, 59, 23);
 		contentPane.add(chckbxNotProject);
 		
@@ -155,6 +171,10 @@ public class EmployeeSearchFrame extends JFrame {
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textAreaEmployee.setText("");
+            lstDepartment.clearSelection();
+            lstProject.clearSelection();
+            chckbxNotDept.setSelected(false);
+            chckbxNotProject.setSelected(false);
 			}
 		});
 		btnClear.setBounds(236, 276, 89, 23);
