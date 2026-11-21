@@ -194,7 +194,7 @@ public class EmployeeSearchFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				JOptionPane.showMessageDialog(
                EmployeeSearchFrame.this,
-               "Employee search functin is not ready.",
+               "Employee search function is not ready.",
                "Search",
                JOptionPane.INFORMATION_MESSAGE
         );
