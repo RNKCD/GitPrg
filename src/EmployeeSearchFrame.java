@@ -21,10 +21,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 
@@ -166,11 +162,6 @@ public class EmployeeSearchFrame extends JFrame {
       projectScroll.setBounds(225, 84, 150, 42);
       contentPane.add(projectScroll);
 		
-      //adding scroll in the project section
-      projectScroll = new JScrollPane(lstProject);
-      projectScroll.setBounds(225, 84, 150, 42);
-      contentPane.add(projectScroll);
-		
 		chckbxNotDept = new JCheckBox("Not");
 		chckbxNotDept.setBounds(71, 133, 59, 23);
 		contentPane.add(chckbxNotDept);
@@ -188,7 +179,8 @@ public class EmployeeSearchFrame extends JFrame {
       contentPane.add(departmentScroll);
 		
       lstDepartment.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lstDepartment.setSelectionMode(
+		lstDepartment.setModel(department);
+      lstDepartment.setSelectionMode(
           ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
       );
 		
@@ -226,7 +218,7 @@ public class EmployeeSearchFrame extends JFrame {
 		
 		textAreaEmployee = new JTextArea();
 		textAreaEmployee.setBounds(36, 197, 339, 68);
-		contentPane.add(textAreaEmployee);
+		
       
       // Add scrolling to employee results
       JScrollPane employeeScroll = new JScrollPane(textAreaEmployee);
