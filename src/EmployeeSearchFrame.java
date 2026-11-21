@@ -189,17 +189,59 @@ public class EmployeeSearchFrame extends JFrame {
 		lblEmployee.setBounds(52, 179, 89, 14);
 		contentPane.add(lblEmployee);
 		
-		JButton btnSearch = new JButton("Search");
-		btnSearch.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(
-               EmployeeSearchFrame.this,
-               "Employee search function is not ready.",
-               "Search",
-               JOptionPane.INFORMATION_MESSAGE
-        );
-			}
-		});
+		
+      JButton btnSearch = new JButton("Search");
+
+      btnSearch.addActionListener(new ActionListener() {
+       @Override
+      public void actionPerformed(ActionEvent e) {
+
+        String dbName = txtDatabase.getText().trim();
+
+        // Get selected departments and projects
+        List<String> selectedDepartments =
+                lstDepartment.getSelectedValuesList();
+
+        List<String> selectedProjects =
+                lstProject.getSelectedValuesList();
+
+        // Read NOT checkbox selections
+        boolean notDepartment = chckbxNotDept.isSelected();
+        boolean notProject = chckbxNotProject.isSelected();
+
+        try {
+            EmployeeSearchService searchService =
+                    new EmployeeSearchService();
+
+            List<String> employees = searchService.searchEmployees(
+                    dbName,
+                    selectedDepartments,
+                    selectedProjects,
+                    notDepartment,
+                    notProject
+            );
+
+            textAreaEmployee.setText("");
+
+            if (employees.isEmpty()) {
+                textAreaEmployee.setText("No employees found.");
+            } else {
+                textAreaEmployee.setText(
+                        String.join("\n", employees)
+                );
+            }
+
+        } catch (DatabaseException ex) {
+            JOptionPane.showMessageDialog(
+                    EmployeeSearchFrame.this,
+                    ex.getMessage(),
+                    "Database Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+});
+
 		btnSearch.setBounds(80, 276, 89, 23);
 		contentPane.add(btnSearch);
 		
