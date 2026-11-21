@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 
 import java.util.List;
 
@@ -89,21 +90,54 @@ public class EmployeeSearchFrame extends JFrame {
 		btnDBFill.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
             
-            //reset the list before adding items
+            String dbName = txtDatabase.getText().trim();
+
+        try {
+            // Retrieve data using Member 1's service
+            List<Department> departments =
+                DatabaseService.loadDepartments(dbName);
+
+            List<Project> projects =
+                DatabaseService.loadProjects(dbName);
+
+            // Reset existing data
             department.clear();
             project.clear();
 
-				String[] dept = {"Headquarters", "Reorganization"};	
-				for(int i = 0; i < dept.length; i++) {
-					department.addElement(dept[i]);
-				}
-				String[] prj = {"ProdoctX", "ProductY", "ProductZ"};
-				for(int j = 0; j < prj.length; j++) {
-					project.addElement(prj[j]);
-				}
-				
-			}
-		});
+            // Display departments
+            for (Department d : departments) {
+                department.addElement(d.getName());
+            }
+
+            // Display projects
+            for (Project p : projects) {
+                project.addElement(p.getName());
+            }
+
+            // Reset GUI selections
+            lstDepartment.clearSelection();
+            lstProject.clearSelection();
+            chckbxNotDept.setSelected(false);
+            chckbxNotProject.setSelected(false);
+            textAreaEmployee.setText("");
+
+        } catch (DatabaseException ex) {
+
+            department.clear();
+            project.clear();
+            lstDepartment.clearSelection();
+            lstProject.clearSelection();
+            textAreaEmployee.setText("");
+
+            JOptionPane.showMessageDialog(
+                EmployeeSearchFrame.this,
+                ex.getMessage(),
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+});
 		
 		btnDBFill.setFont(new Font("Times New Roman", Font.BOLD, 12));
 		btnDBFill.setBounds(307, 19, 68, 23);
@@ -123,6 +157,9 @@ public class EmployeeSearchFrame extends JFrame {
 		lstProject.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		lstProject.setModel(project);
 		lstProject.setBounds(225, 84, 150, 42);
+      lstProject.setSelectionMode(
+          ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+      );
 		
       //adding scroll in the project section
       JScrollPane projectScroll = new JScrollPane(lstProject);
@@ -130,7 +167,7 @@ public class EmployeeSearchFrame extends JFrame {
       contentPane.add(projectScroll);
 		
       //adding scroll in the project section
-      JScrollPane projectScroll = new JScrollPane(lstProject);
+      projectScroll = new JScrollPane(lstProject);
       projectScroll.setBounds(225, 84, 150, 42);
       contentPane.add(projectScroll);
 		
@@ -151,7 +188,9 @@ public class EmployeeSearchFrame extends JFrame {
       contentPane.add(departmentScroll);
 		
       lstDepartment.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		lstDepartment.setModel(department);
+		lstDepartment.setSelectionMode(
+          ListSelectionModel.MULTIPLE_INTERVAL_SELECTION
+      );
 		
 		JLabel lblEmployee = new JLabel("Employee");
 		lblEmployee.setFont(new Font("Times New Roman", Font.BOLD, 12));
@@ -161,7 +200,12 @@ public class EmployeeSearchFrame extends JFrame {
 		JButton btnSearch = new JButton("Search");
 		btnSearch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textAreaEmployee.setText("John Smith\nFranklin Wong");
+				JOptionPane.showMessageDialog(
+               EmployeeSearchFrame.this,
+               "Employee search functin is not ready.",
+               "Search",
+               JOptionPane.INFORMATION_MESSAGE
+        );
 			}
 		});
 		btnSearch.setBounds(80, 276, 89, 23);
