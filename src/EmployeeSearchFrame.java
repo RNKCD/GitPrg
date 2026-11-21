@@ -21,6 +21,13 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+
+import java.util.List;
 
 public class EmployeeSearchFrame extends JFrame {
 
@@ -79,22 +86,54 @@ public class EmployeeSearchFrame extends JFrame {
 		 * The btnDBFill should fill the department and project JList with the 
 		 * departments and projects from your entered database name.
 		 */
-		btnDBFill.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-            
-           // Clear employee results
-           textAreaEmployee.setText("");
-   
-           // Clear selected departments and projects
-           lstDepartment.clearSelection();
-           lstProject.clearSelection();
-   
-           // Reset NOT checkboxes
-           chckbxNotDept.setSelected(false);
-           chckbxNotProject.setSelected(false);
-   				
-   			}
-		});
+      btnDBFill.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+
+        String dbName = txtDatabase.getText().trim();
+
+        try {
+            // Get data from Member 1's database service
+            List<Department> departments =
+                DatabaseService.loadDepartments(dbName);
+
+            List<Project> projects =
+                DatabaseService.loadProjects(dbName);
+
+            // Clear old data
+            department.clear();
+            project.clear();
+
+            // Add departments
+            for (Department d : departments) {
+                department.addElement(d.getName());
+            }
+
+            // Add projects
+            for (Project p : projects) {
+                project.addElement(p.getName());
+            }
+
+            // Reset selections and results
+            lstDepartment.clearSelection();
+            lstProject.clearSelection();
+            textAreaEmployee.setText("");
+            chckbxNotDept.setSelected(false);
+            chckbxNotProject.setSelected(false);
+
+        } catch (DatabaseException ex) {
+
+            department.clear();
+            project.clear();
+
+            JOptionPane.showMessageDialog(
+                EmployeeSearchFrame.this,
+                ex.getMessage(),
+                "Database Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+});
 		
 		btnDBFill.setFont(new Font("Times New Roman", Font.BOLD, 12));
 		btnDBFill.setBounds(307, 19, 68, 23);
@@ -157,6 +196,10 @@ public class EmployeeSearchFrame extends JFrame {
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				textAreaEmployee.setText("");
+            lstDepartment.clearSelection();
+            lstProject.clearSelection();
+            chckbxNotDept.setSelected(false);
+            chckbxNotProject.setSelected(false);
 			}
 		});
 		btnClear.setBounds(236, 276, 89, 23);
@@ -164,7 +207,6 @@ public class EmployeeSearchFrame extends JFrame {
 		
 		textAreaEmployee = new JTextArea();
 		textAreaEmployee.setBounds(36, 197, 339, 68);
-		contentPane.add(textAreaEmployee);
       
       // Add scrolling to employee results
       JScrollPane employeeScroll = new JScrollPane(textAreaEmployee);
